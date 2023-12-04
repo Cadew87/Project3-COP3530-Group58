@@ -6,6 +6,78 @@
 #include "Player.h"
 
 using namespace std;
+int Partition(vector<Player> &v, int start, int end){
+
+    int pivot = end;
+    int j = start;
+    for(int i=start;i<end;++i){
+        if(v[i].Get_Points()<v[pivot].Get_Points())
+        {
+            swap(v[i],v[j]);
+            ++j;
+        }
+    }
+    swap(v[j],v[pivot]);
+    return j;
+
+}
+
+void Quicksort(vector<Player> &v, int start, int end ){
+
+    if(start<end){
+        int p = Partition(v,start,end);
+        Quicksort(v,start,p-1);
+        Quicksort(v,p+1,end);
+    }
+
+}
+void mergeSort(vector<Player>&left, vector<Player>& right, vector<Player>& bars)
+{
+    int nL = left.size();
+    int nR = right.size();
+    int i = 0, j = 0, k = 0;
+
+    while (j < nL && k < nR)
+    {
+        if (left[j].Get_Points() < right[k].Get_Points())
+        {
+            bars[i] = left[j];
+            j++;
+        }
+        else
+        {
+            bars[i] = right[k];
+            k++;
+        }
+        i++;
+    }
+    while (j < nL) {
+        bars[i] = left[j];
+        j++; i++;
+    }
+    while (k < nR) {
+        bars[i] = right[k];
+        k++; i++;
+    }
+}
+
+void sort(vector<Player> & bar)
+{
+    if (bar.size() <= 1) return;
+
+    int mid = bar.size() / 2;
+    vector<Player> left;
+    vector<Player> right;
+
+    for (size_t j = 0; j < mid;j++)
+        left.push_back(bar[j]);
+    for (size_t j = 0; j < (bar.size()) - mid; j++)
+        right.push_back(bar[mid + j]);
+
+    sort(left);
+    sort(right);
+    mergeSort(left, right, bar);
+}
 
 int main() {
     //accessing the csv file with player info
@@ -75,6 +147,12 @@ int main() {
             TEs.push_back(player);
         }
     }
+
+    //Call sort for MergeSort
+    sort(QBs);
+    //Call Quicksort for Quicksort
+    Quicksort(QBs, 0, Qbs.size() - 1)
+    
     return 0;
 }
 
