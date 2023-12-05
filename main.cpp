@@ -8,6 +8,7 @@
 #include "Player.h"
 
 using namespace std;
+//center text function used in COP 3503
 void setText(sf::Text &text, float x, float y){
     sf::FloatRect textRect = text.getLocalBounds();
     text.setOrigin(textRect.left + textRect.width/2.0f, textRect.top + textRect.height/2.0f);
@@ -58,7 +59,7 @@ void mergeSort(vector<Player>&left, vector<Player>& right, vector<Player>& middl
             middle[i] = left[j];
             j++;
         }
-        //Merge Middle with right 
+            //Merge Middle with right
         else
         {
             middle[i] = right[k];
@@ -69,13 +70,13 @@ void mergeSort(vector<Player>&left, vector<Player>& right, vector<Player>& middl
     //Add set left to middle
     while (j < nL) {
         middle[i] = left[j];
-        j++; 
+        j++;
         i++;
     }
     //Add right to middle
     while (k < nR) {
         middle[i] = right[k];
-        k++; 
+        k++;
         i++;
     }
 }
@@ -84,19 +85,19 @@ void sort(vector<Player> & middle)
 {
     if (middle.size() <= 1) return;
 
-    int mid = bar.size() / 2;
+    int mid = middle.size() / 2;
     vector<Player> left;
     vector<Player> right;
-    
+
     for (size_t j = 0; j < mid;j++)
         left.push_back(middle[j]);
-    for (size_t j = 0; j < (bar.size()) - mid; j++)
+    for (size_t j = 0; j < (middle.size()) - mid; j++)
         right.push_back(middle[mid + j]);
-    
+
     //Recursively sort
     sort(left);
     sort(right);
-    mergeSort(left, right, bar);
+    mergeSort(left, right, middle);
 }
 
 int main() {
@@ -143,6 +144,7 @@ int main() {
         Player player(name, pos, team, gp, points);
         bool mark = false;
         //these if statements choose the vector the player goes to
+        //note: the position vectors ended up unused
         if (player.Get_Position() == "QB")
         {
             QBs.push_back(player);
@@ -184,11 +186,11 @@ int main() {
     if (answer == "1"){
         sort(ALL);
     }
-    //Call Quicksort for Quicksort
+        //Call Quicksort for Quicksort
     else{
         Quicksort(ALL, 0, ALL.size() - 1);
     }
-
+    //creating the GUI
     int width = 1200;
     int height = 800;
     sf::RenderWindow window(sf::VideoMode(width, height), "Top Ten Fantasy Football Picks", sf::Style::Close);
@@ -203,11 +205,13 @@ int main() {
     sf::Text prom("Pick:",font,20);
     int pick_count = 1;
 
+    //this is the pick counter
     sf::Text count(to_string(pick_count),font,20);
     welcome.setStyle( sf::Text::Bold | sf::Text::Underlined);
     prom.setStyle( sf::Text::Bold);
     count.setStyle( sf::Text::Bold);
 
+    //locations of titles
     setText(welcome,width/2.0f, 20);
     setText(prom,width/2.0f, 580);
     setText(count,width/2.0f, 620);
@@ -216,6 +220,7 @@ int main() {
     vector<sf::Text> points_ten;
     vector<sf::Text> pos_ten;
     vector<sf::Text> teams_ten;
+    //for loop to show stats
     for(int i =0; i<10; i++){
         sf::Text temp(ALL[100000-i-pick_count].Get_Name(),font,10);
         temp.setFillColor(sf::Color::Black);
@@ -243,6 +248,7 @@ int main() {
         temp4.setPosition(838, 43*i + 103);
         games_ten.push_back(temp4);
     }
+    //for loop for the background rectangles for the middle graph
     for(int i =0; i<11; i++){
         for(int j=0; j<5;j++){
             sf::RectangleShape rec;
@@ -253,6 +259,7 @@ int main() {
         }
     }
 
+    //background of the graph and creation of the buttons
     sf::RectangleShape back;
     back.setSize(sf::Vector2f(780,480));
     back.setPosition(210,50);
@@ -289,6 +296,8 @@ int main() {
     f1.setSize(sf::Vector2f(200,260));
     f1.setPosition(790,535);
     f1.setFillColor(sf::Color::White);
+
+    //titles of buttons
     sf::Text p1000Text("Past 1000 Picks", font, 20);
     sf::Text p100Text("Past 100 Picks", font, 20);
     sf::Text p10Text("Past 10 Picks", font, 20);
@@ -298,6 +307,7 @@ int main() {
     sf::Text f10Text("Future 10 Picks", font, 20);
     sf::Text f1Text("Future 1 Pick", font, 20);
 
+    //text color
     p1000Text.setFillColor(sf::Color::Black);
     p100Text.setFillColor(sf::Color::Black);
     p10Text.setFillColor(sf::Color::Black);
@@ -307,6 +317,7 @@ int main() {
     f10Text.setFillColor(sf::Color::Black);
     f1Text.setFillColor(sf::Color::Black);
 
+    //text location
     setText(p1000Text, p1000.getPosition().x + p1000.getSize().x / 2, p1000.getPosition().y + p1000.getSize().y / 2);
     setText(p100Text, p100.getPosition().x + p100.getSize().x / 2, p100.getPosition().y + p100.getSize().y / 2);
     setText(p10Text, p10.getPosition().x + p10.getSize().x / 2, p10.getPosition().y + p10.getSize().y / 2);
@@ -315,6 +326,8 @@ int main() {
     setText(f100Text, f100.getPosition().x + f100.getSize().x / 2, f100.getPosition().y + f100.getSize().y / 2);
     setText(f10Text, f10.getPosition().x + f10.getSize().x / 2, f10.getPosition().y + f10.getSize().y / 2);
     setText(f1Text, f1.getPosition().x + f1.getSize().x / 2, f1.getPosition().y + f1.getSize().y / 2);
+
+    //graph titles
     sf::Text Name("Name", font, 20);
     sf::Text Team("Team", font, 20);
     sf::Text POS("Position", font, 20);
@@ -331,8 +344,11 @@ int main() {
     POS.setPosition(528, 63);
     Points.setPosition(683, 63);
     Games.setPosition(838, 63);
+
+    //the while loop for the window
     while(window.isOpen())
     {
+        //in order to update the graph
         for(int i =0; i<10; i++){
             sf::Text temp(ALL[100000-i-pick_count].Get_Name(),font,10);
             temp.setFillColor(sf::Color::Black);
@@ -360,64 +376,69 @@ int main() {
             temp4.setPosition(838, 43*i + 103);
             games_ten[i]=temp4;
         }
+        //in order the update the counter
         sf::Text temp(to_string(pick_count),font,20);
         temp.setStyle( sf::Text::Bold);
         setText(temp,width/2.0f, 620);
         count = temp;
-            sf::Event event;
-            while (window.pollEvent(event)) {
-                if (event.type == sf::Event::Closed) {
-                    window.close();
-                }
-
+        //looking for events
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
             }
-            if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 
-                    if (p1000.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count > 1000) {
+        }
+        if (event.type == sf::Event::MouseButtonPressed) {
+            if (event.mouseButton.button == sf::Mouse::Left) {
+                sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 
-                        cout << "Past 1000 Picks button pressed." << endl;
-                        pick_count-=1000;
-                        sf::sleep(sf::milliseconds(500));
-                    }
-                    else if (p100.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count > 100) {
-                        cout << "Past 100 Picks button pressed." << endl;
-                        pick_count-=100;
-                        sf::sleep(sf::milliseconds(500));
-                    }
-                    else if (p10.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count > 10) {
-                        cout << "Past 10 Picks button pressed." << endl;
-                        pick_count-=10;
-                        sf::sleep(sf::milliseconds(500));
-                    }
-                    else if (p1.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count > 1) {
-                        cout << "Past 1 Picks button pressed." << endl;
-                        pick_count--;
-                        sf::sleep(sf::milliseconds(500));
-                    }
-                    else if (f1000.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count<98992) {
-                        cout << "Future 1000 Picks button pressed." << endl;
-                        pick_count+=1000;
-                        sf::sleep(sf::milliseconds(500));
-                    }
-                    else if (f100.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count<99892) {
-                        cout << "Future 100 Picks button pressed." << endl;
-                        pick_count+=100;
-                        sf::sleep(sf::milliseconds(500));
-                    }
-                    else if (f10.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count<99982) {
-                        cout << "Future 10 Picks button pressed." << endl;
-                        pick_count+=10;
-                        sf::sleep(sf::milliseconds(500));
-                    }
-                    else if (f1.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count<99991) {
-                        cout << "Future 10 Picks button pressed." << endl;
-                        pick_count++;
-                        sf::sleep(sf::milliseconds(500));
-                    }
+                //all the if statements relate to all the buttons and have maxes and minimums accordingly
+                if (p1000.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count > 1000) {
+
+                    cout << "Past 1000 Picks button pressed." << endl;
+                    pick_count-=1000;
+                    sf::sleep(sf::milliseconds(500));
+                }
+                else if (p100.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count > 100) {
+                    cout << "Past 100 Picks button pressed." << endl;
+                    pick_count-=100;
+                    sf::sleep(sf::milliseconds(500));
+                }
+                else if (p10.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count > 10) {
+                    cout << "Past 10 Picks button pressed." << endl;
+                    pick_count-=10;
+                    sf::sleep(sf::milliseconds(500));
+                }
+                else if (p1.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count > 1) {
+                    cout << "Past 1 Picks button pressed." << endl;
+                    pick_count--;
+                    sf::sleep(sf::milliseconds(500));
+                }
+                else if (f1000.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count<98992) {
+                    cout << "Future 1000 Picks button pressed." << endl;
+                    pick_count+=1000;
+                    sf::sleep(sf::milliseconds(500));
+                }
+                else if (f100.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count<99892) {
+                    cout << "Future 100 Picks button pressed." << endl;
+                    pick_count+=100;
+                    sf::sleep(sf::milliseconds(500));
+                }
+                else if (f10.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count<99982) {
+                    cout << "Future 10 Picks button pressed." << endl;
+                    pick_count+=10;
+                    sf::sleep(sf::milliseconds(500));
+                }
+                else if (f1.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count<99991) {
+                    cout << "Future 10 Picks button pressed." << endl;
+                    pick_count++;
+                    sf::sleep(sf::milliseconds(500));
                 }
             }
+        }
+
+        // this draws and redraws the window when neccesary
         window.clear();
         window.draw(shape1);
         window.draw(back);
