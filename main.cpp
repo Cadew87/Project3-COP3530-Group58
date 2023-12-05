@@ -188,12 +188,48 @@ int main() {
     font.loadFromFile("font.ttf");
     sf::Text welcome("Top Ten Fantasy Football Picks",font,24);
     sf::Text prom("Pick:",font,20);
+    int pick_count = 1;
 
+    sf::Text count(to_string(pick_count),font,20);
     welcome.setStyle( sf::Text::Bold | sf::Text::Underlined);
     prom.setStyle( sf::Text::Bold);
+    count.setStyle( sf::Text::Bold);
 
     setText(welcome,width/2.0f, 20);
     setText(prom,width/2.0f, 580);
+    setText(count,width/2.0f, 620);
+    vector<sf::Text> names_ten;
+    vector<sf::Text> games_ten;
+    vector<sf::Text> points_ten;
+    vector<sf::Text> pos_ten;
+    vector<sf::Text> teams_ten;
+    for(int i =0; i<10; i++){
+        sf::Text temp(ALL[100000-i-pick_count].Get_Name(),font,10);
+        temp.setFillColor(sf::Color::Black);
+        temp.setStyle( sf::Text::Bold);
+        temp.setPosition(218, 43*i + 103);
+        names_ten.push_back(temp);
+        sf::Text temp1(ALL[100000-i-pick_count].Get_Team(),font,12);
+        temp1.setFillColor(sf::Color::Black);
+        temp1.setStyle( sf::Text::Bold);
+        temp1.setPosition(373, 43*i + 103);
+        teams_ten.push_back(temp1);
+        sf::Text temp2(ALL[100000-i-pick_count].Get_Position(),font,12);
+        temp2.setFillColor(sf::Color::Black);
+        temp2.setStyle( sf::Text::Bold);
+        temp2.setPosition(528, 43*i + 103);
+        pos_ten.push_back(temp2);
+        sf::Text temp3(to_string(ALL[100000-i-pick_count].Get_Points()),font,12);
+        temp3.setFillColor(sf::Color::Black);
+        temp3.setStyle( sf::Text::Bold);
+        temp3.setPosition(683, 43*i + 103);
+        points_ten.push_back(temp3);
+        sf::Text temp4(to_string(ALL[100000-i-pick_count].Get_Games_Played()),font,12);
+        temp4.setFillColor(sf::Color::Black);
+        temp4.setStyle( sf::Text::Bold);
+        temp4.setPosition(838, 43*i + 103);
+        games_ten.push_back(temp4);
+    }
     for(int i =0; i<11; i++){
         for(int j=0; j<5;j++){
             sf::RectangleShape rec;
@@ -203,6 +239,7 @@ int main() {
             recs.push_back(rec);
         }
     }
+
     sf::RectangleShape back;
     back.setSize(sf::Vector2f(780,480));
     back.setPosition(210,50);
@@ -239,21 +276,142 @@ int main() {
     f1.setSize(sf::Vector2f(200,260));
     f1.setPosition(790,535);
     f1.setFillColor(sf::Color::White);
+    sf::Text p1000Text("Past 1000 Picks", font, 20);
+    sf::Text p100Text("Past 100 Picks", font, 20);
+    sf::Text p10Text("Past 10 Picks", font, 20);
+    sf::Text p1Text("Past 1 Pick", font, 20);
+    sf::Text f1000Text("Future 1000 Picks", font, 20);
+    sf::Text f100Text("Future 100 Picks", font, 20);
+    sf::Text f10Text("Future 10 Picks", font, 20);
+    sf::Text f1Text("Future 1 Pick", font, 20);
+
+    p1000Text.setFillColor(sf::Color::Black);
+    p100Text.setFillColor(sf::Color::Black);
+    p10Text.setFillColor(sf::Color::Black);
+    p1Text.setFillColor(sf::Color::Black);
+    f1000Text.setFillColor(sf::Color::Black);
+    f100Text.setFillColor(sf::Color::Black);
+    f10Text.setFillColor(sf::Color::Black);
+    f1Text.setFillColor(sf::Color::Black);
+
+    setText(p1000Text, p1000.getPosition().x + p1000.getSize().x / 2, p1000.getPosition().y + p1000.getSize().y / 2);
+    setText(p100Text, p100.getPosition().x + p100.getSize().x / 2, p100.getPosition().y + p100.getSize().y / 2);
+    setText(p10Text, p10.getPosition().x + p10.getSize().x / 2, p10.getPosition().y + p10.getSize().y / 2);
+    setText(p1Text, p1.getPosition().x + p1.getSize().x / 2, p1.getPosition().y + p1.getSize().y / 2);
+    setText(f1000Text, f1000.getPosition().x + f1000.getSize().x / 2, f1000.getPosition().y + f1000.getSize().y / 2);
+    setText(f100Text, f100.getPosition().x + f100.getSize().x / 2, f100.getPosition().y + f100.getSize().y / 2);
+    setText(f10Text, f10.getPosition().x + f10.getSize().x / 2, f10.getPosition().y + f10.getSize().y / 2);
+    setText(f1Text, f1.getPosition().x + f1.getSize().x / 2, f1.getPosition().y + f1.getSize().y / 2);
+    sf::Text Name("Name", font, 20);
+    sf::Text Team("Team", font, 20);
+    sf::Text POS("Position", font, 20);
+    sf::Text Points("Total Points", font, 20);
+    sf::Text Games("Total Games", font, 20);
+
+    Name.setFillColor(sf::Color::Black);
+    Team.setFillColor(sf::Color::Black);
+    POS.setFillColor(sf::Color::Black);
+    Points.setFillColor(sf::Color::Black);
+    Games.setFillColor(sf::Color::Black);
+    Name.setPosition(218, 63);
+    Team.setPosition(373, 63);
+    POS.setPosition(528, 63);
+    Points.setPosition(683, 63);
+    Games.setPosition(838, 63);
     while(window.isOpen())
     {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed){
-                window.close();
-            }
-
+        for(int i =0; i<10; i++){
+            sf::Text temp(ALL[100000-i-pick_count].Get_Name(),font,10);
+            temp.setFillColor(sf::Color::Black);
+            temp.setStyle( sf::Text::Bold);
+            temp.setPosition(218, 43*i + 103);
+            names_ten[i]=temp;
+            sf::Text temp1(ALL[100000-i-pick_count].Get_Team(),font,12);
+            temp1.setFillColor(sf::Color::Black);
+            temp1.setStyle( sf::Text::Bold);
+            temp1.setPosition(373, 43*i + 103);
+            teams_ten[i]=temp1;
+            sf::Text temp2(ALL[100000-i-pick_count].Get_Position(),font,12);
+            temp2.setFillColor(sf::Color::Black);
+            temp2.setStyle( sf::Text::Bold);
+            temp2.setPosition(528, 43*i + 103);
+            pos_ten[i]=temp2;
+            sf::Text temp3(to_string(ALL[100000-i-pick_count].Get_Points()),font,12);
+            temp3.setFillColor(sf::Color::Black);
+            temp3.setStyle( sf::Text::Bold);
+            temp3.setPosition(683, 43*i + 103);
+            points_ten[i]=temp3;
+            sf::Text temp4(to_string(ALL[100000-i-pick_count].Get_Games_Played()),font,12);
+            temp4.setFillColor(sf::Color::Black);
+            temp4.setStyle( sf::Text::Bold);
+            temp4.setPosition(838, 43*i + 103);
+            games_ten[i]=temp4;
         }
+        sf::Text temp(to_string(pick_count),font,20);
+        temp.setStyle( sf::Text::Bold);
+        setText(temp,width/2.0f, 620);
+        count = temp;
+            sf::Event event;
+            while (window.pollEvent(event)) {
+                if (event.type == sf::Event::Closed) {
+                    window.close();
+                }
+
+            }
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+
+                    if (p1000.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count > 1000) {
+
+                        cout << "Past 1000 Picks button pressed." << endl;
+                        pick_count-=1000;
+                        sf::sleep(sf::milliseconds(500));
+                    }
+                    else if (p100.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count > 100) {
+                        cout << "Past 100 Picks button pressed." << endl;
+                        pick_count-=100;
+                        sf::sleep(sf::milliseconds(500));
+                    }
+                    else if (p10.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count > 10) {
+                        cout << "Past 10 Picks button pressed." << endl;
+                        pick_count-=10;
+                        sf::sleep(sf::milliseconds(500));
+                    }
+                    else if (p1.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count > 1) {
+                        cout << "Past 1 Picks button pressed." << endl;
+                        pick_count--;
+                        sf::sleep(sf::milliseconds(500));
+                    }
+                    else if (f1000.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count<98992) {
+                        cout << "Future 1000 Picks button pressed." << endl;
+                        pick_count+=1000;
+                        sf::sleep(sf::milliseconds(500));
+                    }
+                    else if (f100.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count<99892) {
+                        cout << "Future 100 Picks button pressed." << endl;
+                        pick_count+=100;
+                        sf::sleep(sf::milliseconds(500));
+                    }
+                    else if (f10.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count<99982) {
+                        cout << "Future 10 Picks button pressed." << endl;
+                        pick_count+=10;
+                        sf::sleep(sf::milliseconds(500));
+                    }
+                    else if (f1.getGlobalBounds().contains(mousePos.x, mousePos.y) and pick_count<99991) {
+                        cout << "Future 10 Picks button pressed." << endl;
+                        pick_count++;
+                        sf::sleep(sf::milliseconds(500));
+                    }
+                }
+            }
         window.clear();
         window.draw(shape1);
         window.draw(back);
         for (int i = 0; i<recs.size(); i++){
             window.draw(recs[i]);
         }
+
         window.draw(p1000);
         window.draw(p100);
         window.draw(p10);
@@ -264,6 +422,27 @@ int main() {
         window.draw(f10);
         window.draw(welcome);
         window.draw(prom);
+        window.draw(count);
+        for(int i =0; i<10; i++){
+            window.draw(names_ten[i]);
+            window.draw(teams_ten[i]);
+            window.draw(pos_ten[i]);
+            window.draw(points_ten[i]);
+            window.draw(games_ten[i]);
+        }
+        window.draw(p1000Text);
+        window.draw(p100Text);
+        window.draw(p10Text);
+        window.draw(f1000Text);
+        window.draw(f100Text);
+        window.draw(f10Text);
+        window.draw(f1Text);
+        window.draw(p1Text);
+        window.draw(Name);
+        window.draw(Points);
+        window.draw(POS);
+        window.draw(Team);
+        window.draw(Games);
         window.display();
     }
 
