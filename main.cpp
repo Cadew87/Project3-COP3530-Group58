@@ -6,39 +6,36 @@
 #include <chrono>
 #include <vector>
 #include "Player.h"
+#include "main.h"
 
 using namespace std;
-void setText(sf::Text &text, float x, float y){
-    sf::FloatRect textRect = text.getLocalBounds();
-    text.setOrigin(textRect.left + textRect.width/2.0f, textRect.top + textRect.height/2.0f);
-    text.setPosition(sf::Vector2f(x, y));
-}
-int Partition(vector<Player> &v, int start, int end){
+
+int Partition(vector<Player>& v, int start, int end) {
 
     int pivot = end;
     int j = start;
-    for(int i=start;i<end;++i){
-        if(v[i].Get_Points()<v[pivot].Get_Points())
+    for (int i = start; i < end; ++i) {
+        if (v[i].Get_Points() < v[pivot].Get_Points())
         {
-            swap(v[i],v[j]);
+            swap(v[i], v[j]);
             ++j;
         }
     }
-    swap(v[j],v[pivot]);
+    swap(v[j], v[pivot]);
     return j;
 
 }
 
-void Quicksort(vector<Player> &v, int start, int end ){
+void Quicksort(vector<Player>& v, int start, int end) {
 
-    if(start<end){
-        int p = Partition(v,start,end);
-        Quicksort(v,start,p-1);
-        Quicksort(v,p+1,end);
+    if (start < end) {
+        int p = Partition(v, start, end);
+        Quicksort(v, start, p - 1);
+        Quicksort(v, p + 1, end);
     }
 
 }
-void mergeSort(vector<Player>&left, vector<Player>& right, vector<Player>& bars)
+void mergeSort(vector<Player>& left, vector<Player>& right, vector<Player>& bars)
 {
     int nL = left.size();
     int nR = right.size();
@@ -68,7 +65,7 @@ void mergeSort(vector<Player>&left, vector<Player>& right, vector<Player>& bars)
     }
 }
 
-void sort(vector<Player> & bar)
+void sort(vector<Player>& bar)
 {
     if (bar.size() <= 1) return;
 
@@ -76,7 +73,7 @@ void sort(vector<Player> & bar)
     vector<Player> left;
     vector<Player> right;
 
-    for (size_t j = 0; j < mid;j++)
+    for (size_t j = 0; j < mid; j++)
         left.push_back(bar[j]);
     for (size_t j = 0; j < (bar.size()) - mid; j++)
         right.push_back(bar[mid + j]);
@@ -87,6 +84,16 @@ void sort(vector<Player> & bar)
 }
 
 int main() {
+    // Initialize SFML window
+    sf::RenderWindow window(sf::VideoMode(1024, 768), "Group Elite 58: Fantasy Football Assistant");
+
+    // Load font
+    sf::Font font;
+    if (!font.loadFromFile("files/font.ttf")) {
+        cout << "Failed to load font." << endl;
+        return -1;
+    }
+
     //accessing the csv file with player info
     ifstream player_file;
     player_file.open("fantasy_football_data.csv");
@@ -99,7 +106,7 @@ int main() {
     vector<Player> TEs;
     vector<Player> Ks;
     vector<Player> DEFs;
-    vector<Player> ALL;
+    vector<Player> ALL, topTenPicks;
 
     //this while loop is accessing the csv line by line until there are no more lines
     while (getline(player_file, line)) {
@@ -133,139 +140,203 @@ int main() {
         if (player.Get_Position() == "QB")
         {
             QBs.push_back(player);
-            mark= true;
+            mark = true;
         }
         if (player.Get_Position() == "WR")
         {
             WRs.push_back(player);
-            mark= true;
+            mark = true;
         }
         if (player.Get_Position() == "RB")
         {
             RBs.push_back(player);
-            mark= true;
+            mark = true;
         }
         if (player.Get_Position() == "K")
         {
             Ks.push_back(player);
-            mark= true;
+            mark = true;
         }
         if (player.Get_Position() == "DEF")
         {
             DEFs.push_back(player);
-            mark= true;
+            mark = true;
         }
         if (player.Get_Position() == "TE")
         {
             TEs.push_back(player);
             mark = true;
         }
-        if (mark){
+        if (mark) {
             ALL.push_back(player);
         }
     }
-    string answer;
-    cout << "Insert 1 for Merge Sort or anything else for Quick Sort: ";
-    cin >> answer;
-    //Call sort for MergeSort
-    if (answer == "1"){
-        sort(ALL);
-    }
-    //Call Quicksort for Quicksort
-    else{
-        Quicksort(ALL, 0, ALL.size() - 1);
-    }
+    
+        // Define table headers
+        string headerTitles[] = { "Top 10 Picks", "Position", "Projected Pts", "Games Played" };
+        vector<sf::Text> headers;
 
-    int width = 1200;
-    int height = 800;
-    sf::RenderWindow window(sf::VideoMode(width, height), "Top Ten Fantasy Football Picks", sf::Style::Close);
-    sf::RectangleShape shape1;
-    shape1.setSize(sf::Vector2f(width,height));
-    shape1.setPosition(0,0);
-    shape1.setFillColor(sf::Color::Blue);
-    vector<sf::RectangleShape> recs;
-    sf::Font font;
-    font.loadFromFile("font.ttf");
-    sf::Text welcome("Top Ten Fantasy Football Picks",font,24);
-    sf::Text prom("Pick:",font,20);
-
-    welcome.setStyle( sf::Text::Bold | sf::Text::Underlined);
-    prom.setStyle( sf::Text::Bold);
-
-    setText(welcome,width/2.0f, 20);
-    setText(prom,width/2.0f, 580);
-    for(int i =0; i<11; i++){
-        for(int j=0; j<5;j++){
-            sf::RectangleShape rec;
-            rec.setSize(sf::Vector2f(150,38));
-            rec.setFillColor(sf::Color::White);
-            rec.setPosition(155*j + 215, 43*i + 55);
-            recs.push_back(rec);
+        // Prepare the headers
+        for (const string& title : headerTitles) {
+            sf::Text text(title, font, 20);
+            text.setFillColor(sf::Color::White);
+            headers.push_back(text);
         }
-    }
-    sf::RectangleShape back;
-    back.setSize(sf::Vector2f(780,480));
-    back.setPosition(210,50);
-    back.setFillColor(sf::Color::Black);
-    sf::RectangleShape p1000;
-    p1000.setSize(sf::Vector2f(200,260));
-    p1000.setPosition(5,5);
-    p1000.setFillColor(sf::Color::White);
-    sf::RectangleShape p100;
-    p100.setSize(sf::Vector2f(200, 260));
-    p100.setPosition(5,270);
-    p100.setFillColor(sf::Color::White);
-    sf::RectangleShape p10;
-    p10.setSize(sf::Vector2f(200,260));
-    p10.setPosition(5,535);
-    p10.setFillColor(sf::Color::White);
-    sf::RectangleShape f1000;
-    f1000.setSize(sf::Vector2f(200,260));
-    f1000.setPosition(995,5);
-    f1000.setFillColor(sf::Color::White);
-    sf::RectangleShape f100;
-    f100.setSize(sf::Vector2f(200, 260));
-    f100.setPosition(995,270);
-    f100.setFillColor(sf::Color::White);
-    sf::RectangleShape f10;
-    f10.setSize(sf::Vector2f(200,260));
-    f10.setPosition(995,535);
-    f10.setFillColor(sf::Color::White);
-    sf::RectangleShape p1;
-    p1.setSize(sf::Vector2f(200,260));
-    p1.setPosition(210,535);
-    p1.setFillColor(sf::Color::White);
-    sf::RectangleShape f1;
-    f1.setSize(sf::Vector2f(200,260));
-    f1.setPosition(790,535);
-    f1.setFillColor(sf::Color::White);
-    while(window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed){
-                window.close();
+
+        // Create buttons
+        sf::RectangleShape quickSortButton(sf::Vector2f(200, 50));
+        quickSortButton.setPosition(262, 700); // Centered in window width and placed at the bottom
+        quickSortButton.setFillColor(sf::Color::Green);
+
+        sf::RectangleShape mergeSortButton(sf::Vector2f(200, 50));
+        mergeSortButton.setPosition(562, 700); 
+        mergeSortButton.setFillColor(sf::Color::Blue);
+
+        // Create text for buttons
+        sf::Text quickSortText("Quick Sort", font, 20);
+        quickSortText.setPosition(quickSortButton.getPosition() + sf::Vector2f(10, 10)); 
+        quickSortText.setFillColor(sf::Color::White);
+
+        sf::Text mergeSortText("Merge Sort", font, 20);
+        mergeSortText.setPosition(mergeSortButton.getPosition() + sf::Vector2f(10, 10)); 
+        mergeSortText.setFillColor(sf::Color::White);
+
+
+        // Load football image into a texture
+        sf::Texture footballTexture;
+        if (!footballTexture.loadFromFile("files/images/football.png")) {
+            cout << "Failed to load football image." << endl;
+            return -1;
+        }
+        // Create a sprite for the football image
+        sf::Sprite footballSprite;
+        footballSprite.setTexture(footballTexture);
+
+        // Determine the new size
+        float desiredWidth = 75.0f;
+        float desiredHeight = 75.0f;
+
+        // Calculate the scale factors
+        float scaleX = desiredWidth / footballTexture.getSize().x;
+        float scaleY = desiredHeight / footballTexture.getSize().y;
+
+        // Set the scale of the sprite
+        footballSprite.setScale(scaleX, scaleY);
+
+        float footballMargin = 10.0f;
+        footballSprite.setPosition(window.getSize().x - (footballTexture.getSize().x * scaleX) - footballMargin, footballMargin);
+
+        // Define rectangles for layout
+        sf::RectangleShape topTable(sf::Vector2f(800.0f, 300.0f));
+        topTable.setPosition(50.0f, 50.0f);
+        topTable.setFillColor(sf::Color(200, 200, 200));
+        topTable.setOutlineThickness(1.0f);
+        topTable.setOutlineColor(sf::Color::Black);
+
+        sf::RectangleShape leftHistory(sf::Vector2f(150.0f, 150.0f));
+        leftHistory.setPosition(50.0f, 400.0f);
+        leftHistory.setFillColor(sf::Color(150, 150, 150));
+        leftHistory.setOutlineThickness(1.0f);
+        leftHistory.setOutlineColor(sf::Color::Black);
+
+        sf::RectangleShape rightFuture(sf::Vector2f(150.0f, 150.0f));
+        rightFuture.setPosition(824.0f, 400.0f);
+        rightFuture.setFillColor(sf::Color(150, 150, 150));
+        rightFuture.setOutlineThickness(1.0f);
+        rightFuture.setOutlineColor(sf::Color::Black);
+
+
+        // Main loop
+        while (window.isOpen()) {
+            sf::Event event;
+            bool needToSort = false;
+            bool sorted = false; 
+
+            while (window.pollEvent(event)) {
+                if (event.type == sf::Event::Closed)
+                    window.close();
+
+                // Check for button clicks
+                if (event.type == sf::Event::MouseButtonPressed) {
+                    if (event.mouseButton.button == sf::Mouse::Left) {
+                        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+                        // If Quick Sort button is clicked
+                        if (quickSortButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                            cout << "Quick Sort button pressed" << endl;
+                            Quicksort(ALL, 0, ALL.size() - 1);
+                            needToSort = true;
+                            sorted = true;
+                        }
+                        // If Merge Sort button is clicked
+                        else if (mergeSortButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                            cout << "Merge Sort button pressed" << endl;
+                            sort(ALL);
+                            needToSort = true;
+                            sorted = true;
+                        }
+                    }
+                }
             }
 
-        }
-        window.clear();
-        window.draw(shape1);
-        window.draw(back);
-        for (int i = 0; i<recs.size(); i++){
-            window.draw(recs[i]);
-        }
-        window.draw(p1000);
-        window.draw(p100);
-        window.draw(p10);
-        window.draw(p1);
-        window.draw(f1);
-        window.draw(f1000);
-        window.draw(f100);
-        window.draw(f10);
-        window.draw(welcome);
-        window.draw(prom);
-        window.display();
-    }
+            if (needToSort && sorted) {
+                topTenPicks.clear();
+                for (size_t i = 0; i < 10 && i < ALL.size(); ++i) {
+                    topTenPicks.push_back(ALL[i]);
+                }
+                needToSort = false;
+            }
 
-    return 0;
+            window.clear(sf::Color::White);
+
+            // Draw table and history/future rectangles
+            window.draw(topTable);
+
+            // Draw the football sprite in the top right corner
+            window.draw(footballSprite);
+
+            // Draw headers
+            float currentX = 60.0f;
+            float currentY = 60.0f; 
+            for (sf::Text& header : headers) {
+                header.setFillColor(sf::Color::Black);
+                header.setPosition(currentX, currentY);
+                window.draw(header);
+                currentX += 200.0f; 
+            }
+
+            // Draw the top 10 picks
+            currentY = 100.0f; 
+            for (auto& player : topTenPicks) {
+                sf::Text playerName(player.Get_Name(), font, 20);
+                playerName.setFillColor(sf::Color::Black);
+                playerName.setPosition(60.0f, currentY); 
+                window.draw(playerName);
+
+                // Displaying the player's projected points
+                sf::Text playerPoints(to_string(player.Get_Points()), font, 20);
+                playerPoints.setFillColor(sf::Color::Black);
+                playerPoints.setPosition(260.0f, currentY); 
+                window.draw(playerPoints);
+
+                // Displaying the player's games played
+                sf::Text playerGamesPlayed(to_string(player.Get_Games_Played()), font, 20);
+                playerGamesPlayed.setFillColor(sf::Color::Black);
+                playerGamesPlayed.setPosition(460.0f, currentY); 
+                window.draw(playerGamesPlayed);
+
+                currentY += 30.0f; 
+            }
+
+
+            // Draw buttons and text
+            window.draw(quickSortButton);
+            window.draw(mergeSortButton);
+            window.draw(quickSortText);
+            window.draw(mergeSortText);
+
+            window.display();
+        }
+
+        return 0;
 }
+
