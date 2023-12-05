@@ -13,11 +13,14 @@ void setText(sf::Text &text, float x, float y){
     text.setOrigin(textRect.left + textRect.width/2.0f, textRect.top + textRect.height/2.0f);
     text.setPosition(sf::Vector2f(x, y));
 }
+
 int Partition(vector<Player> &v, int start, int end){
 
     int pivot = end;
     int j = start;
+    // Go through entire vector checking pivot
     for(int i=start;i<end;++i){
+        // check if Value inside vector is larger than pivot
         if(v[i].Get_Points()<v[pivot].Get_Points())
         {
             swap(v[i],v[j]);
@@ -29,8 +32,9 @@ int Partition(vector<Player> &v, int start, int end){
 
 }
 
-void Quicksort(vector<Player> &v, int start, int end ){
-
+void Quicksort(vector<Player> &v, int start, int end )
+{
+    //Recursively sort through vector
     if(start<end){
         int p = Partition(v,start,end);
         Quicksort(v,start,p-1);
@@ -38,49 +42,58 @@ void Quicksort(vector<Player> &v, int start, int end ){
     }
 
 }
-void mergeSort(vector<Player>&left, vector<Player>& right, vector<Player>& bars)
+void mergeSort(vector<Player>&left, vector<Player>& right, vector<Player>& middle)
 {
     int nL = left.size();
     int nR = right.size();
-    int i = 0, j = 0, k = 0;
+    int i = 0;
+    int j = 0;
+    int k = 0;
 
     while (j < nL && k < nR)
     {
+        // Merge Middle with left
         if (left[j].Get_Points() < right[k].Get_Points())
         {
-            bars[i] = left[j];
+            middle[i] = left[j];
             j++;
         }
+        //Merge Middle with right 
         else
         {
-            bars[i] = right[k];
+            middle[i] = right[k];
             k++;
         }
         i++;
     }
+    //Add set left to middle
     while (j < nL) {
-        bars[i] = left[j];
-        j++; i++;
+        middle[i] = left[j];
+        j++; 
+        i++;
     }
+    //Add right to middle
     while (k < nR) {
-        bars[i] = right[k];
-        k++; i++;
+        middle[i] = right[k];
+        k++; 
+        i++;
     }
 }
 
-void sort(vector<Player> & bar)
+void sort(vector<Player> & middle)
 {
-    if (bar.size() <= 1) return;
+    if (middle.size() <= 1) return;
 
     int mid = bar.size() / 2;
     vector<Player> left;
     vector<Player> right;
-
+    
     for (size_t j = 0; j < mid;j++)
-        left.push_back(bar[j]);
+        left.push_back(middle[j]);
     for (size_t j = 0; j < (bar.size()) - mid; j++)
-        right.push_back(bar[mid + j]);
-
+        right.push_back(middle[mid + j]);
+    
+    //Recursively sort
     sort(left);
     sort(right);
     mergeSort(left, right, bar);
